@@ -1,59 +1,89 @@
 const choices = ["rock", "paper", "scissors"]
 
-function randomChoice() {
-    const randomIndex = Math.floor(Math.random() * choices.length);
-    const answer = choices[randomIndex]
-    return answer
+const rockButton = document.querySelector(".rock")
+rockButton.addEventListener('click', handleRock)
+
+const paperButton = document.querySelector(".paper")
+paperButton.addEventListener('click', handlePaper)
+
+const scissorsButton = document.querySelector(".scissors")
+scissorsButton.addEventListener('click', handleScissors)
+
+const allButtons = document.querySelectorAll('button')
+
+const results = document.querySelector('.results')
+
+
+function handleRock() {
+    playGame("rock")
 }
 
-function playGame() {
-    let userPoints = 0
-    let cpuPoints = 0
-    while (cpuPoints < 5 && userPoints < 5) {
-        const user = prompt("Choose between rock, paper scissors", "");
-        if (typeof user === "string" ) user.toLowerCase
+function handlePaper() {
+    playGame("paper")
+}
 
-        const cpu = randomChoice()
+function handleScissors() {
+    playGame("scissors")
+}
 
-        //Here are the rules
-        if (user === "rock" && cpu === "scissors") {
-            userPoints += 1
-            alert(`Nice, you won 1 point, opponent pick was ${cpu}`)
+function createParagraph(text) {
+    const p = document.createElement('p')
+    p.textContent = text
+    results.appendChild(p)
+}
+
+function randomPick() {
+    let i = Math.floor(Math.random() * choices.length)
+    const selection = choices[i]
+    return selection
+}
+
+let playerPoints = 0
+let npcPoints = 0
+
+function playGame(playerElection) {
+    npcElection = randomPick()
+    if (playerPoints < 5 && npcPoints < 5) {
+        if (
+            (playerElection === "rock" && npcElection === "scissors") || 
+            (playerElection === "paper" && npcElection === "rock") || 
+            (playerElection === "scissors" && npcElection === "paper"))
+        {
+            playerPoints += 1
+            createParagraph("Victory")
+            console.log(playerElection, npcElection)
         }
-        else if (user === "rock" && cpu === "paper") {
-            cpuPoints += 1
-            alert(`Oops, your opponent won 1 point, opponent pick was ${cpu}`)
+        else if (
+            (playerElection === "rock" && npcElection === "paper") || 
+            (playerElection === "paper" && npcElection === "scissors") || 
+            (playerElection === "scissors" && npcElection === "rock"))
+        {
+            npcPoints += 1
+            createParagraph("Defeat")
+            console.log(playerElection, npcElection)
         }
-        else if (user === "paper" && cpu === "rock") {
-            userPoints += 1
-            alert(`Nice, you won 1 point, opponent pick was ${cpu}`)
+        else if (playerElection === npcElection) {
+            createParagraph('Draw'); 
+            console.log(playerElection, npcElection)
         }
-        else if (user === "paper" && cpu === "scissors") {
-            cpuPoints += 1
-            alert(`Oops, your opponent won 1 point, opponent pick was ${cpu}`)
+    
+        createParagraph(`YOU: ${playerPoints} /// NPC: ${npcPoints}`);
+    
+        if (playerPoints === 5) {
+            createParagraph('Congratulations, you won bro'); 
+            setTimeout(removeEventListeners, 1)
         }
-        else if (user === "scissors" && cpu === "paper") {
-            userPoints += 1
-            alert(`Nice, you won 1 point, opponent pick was ${cpu}`)
+        else if (playerPoints === 5) {
+            createParagraph('Bruh, you lose...'); 
+            setTimeout(removeEventListeners, 1)
         }
-        else if (user === "scissors" && cpu === "rock") {
-            cpuPoints += 1
-            alert(`Oops, your opponent won 1 point, opponent pick was ${cpu}`)
-        }
-        else if (user === null) {
-                cpuPoints += 1
-                alert('You did not choose anything... a point was granted to your opponent')
-        }
-        else if (user === cpu) {
-            alert(`It was a tie between ${user}s, let's do it again`)
-        }
-        else alert(`"${user}" is not a valid choice, let's do it again`)
+    }   
+}
+
+function removeEventListeners() {
+    allButtons.forEach(function(button) {
+    button.removeEventListener('click', handleRock)
+    button.removeEventListener('click', handlePaper)
+    button.removeEventListener('click', handleScissors)
+    })
     }
-
-    if (userPoints > cpuPoints) alert(`Congrats, you won ${userPoints} to ${cpuPoints}`)
-    else alert(`Oops, you lose ${cpuPoints} to ${userPoints}`)
-
-}
-
-const button = document.querySelector(".pene");
-button.addEventListener("click", playGame);
